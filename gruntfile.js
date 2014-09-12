@@ -10,7 +10,21 @@ module.exports = function(grunt) {
 	    	version: '0.16.2',
 		    outputDir: 'binaries',
 		    downloadDir: 'tmp'
-    	}
+    	},
+        sass: {
+            dev: {
+                options: {
+                    style: 'nested'
+                },
+                files: [{
+                    expand: true,
+                    cwd: 'browser/sass',
+                    src: ['**/*.scss'],
+                    dest: 'browser/css',
+                    ext: '.css'
+                }]
+            }
+        },
   	});
 
   	grunt.registerTask('test', function() {

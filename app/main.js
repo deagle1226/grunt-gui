@@ -10,6 +10,7 @@ require('crash-reporter').start();
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the javascript object is GCed.
 var mainWindow = null;
+var htmlDir = 'file://' + __dirname.replace('app', 'browser') + '/html/';
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function() {
@@ -24,7 +25,7 @@ app.on('ready', function() {
   mainWindow = new BrowserWindow({width: 800, height: 600});
 
   // and load the index.html of the app.
-  mainWindow.loadUrl('file://' + __dirname + '/index.html');
+  mainWindow.loadUrl(htmlDir + 'index.html');
 
   //grunt.task.run('test');
   ipc.on('grunt-event', function(event, arg) {
