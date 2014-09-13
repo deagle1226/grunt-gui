@@ -1,8 +1,8 @@
 var app = require('app');  // Module to control application life.
 var BrowserWindow = require('browser-window');  // Module to create native browser window.
-var grunt = require('grunt');
+//var grunt = require('grunt');
 var ipc = require('ipc');
-var spawn = require('child_process').spawn;
+var spawn = require('cross-spawn').spawn;
 
 // Report crashes to our server.
 require('crash-reporter').start();
@@ -28,11 +28,8 @@ app.on('ready', function() {
   mainWindow.loadUrl(htmlDir + 'index.html');
 
   //grunt.task.run('test');
-  ipc.on('grunt-event', function(event, arg) {
-      var g = spawn('grunt', [arg]);
-      g.stdout.on('data', function(data) {
-          console.log(data.toString());
-      });
+  ipc.on('gg-refresh', function(event) {
+      mainWindow.webContents.reloadIgnoringCache();
   });
 
   // Emitted when the window is closed.

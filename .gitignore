@@ -1,5 +1,6 @@
 node_modules
 bower_components
+browser/bower
 binaries
 tmp
 .sass-cache

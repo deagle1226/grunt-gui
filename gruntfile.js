@@ -11,6 +11,11 @@ module.exports = function(grunt) {
 		    outputDir: 'binaries',
 		    downloadDir: 'tmp'
     	},
+        shell: {
+            run: {
+                command: '.\\binaries\\atom.exe .'
+            }
+        },
         sass: {
             dev: {
                 options: {
@@ -25,9 +30,25 @@ module.exports = function(grunt) {
                 }]
             }
         },
+        watch: {
+            sass: {
+                files: ['browser/sass/**/*.scss'],
+                tasks: ['sass:dev']
+            }
+        },
+        concurrent: {
+            dev: {
+                tasks: ['shell:run', 'watch:sass'],
+                options: {
+                    logConcurrentOutput: true
+                }
+            }
+        }
   	});
 
-  	grunt.registerTask('test', function() {
-  		grunt.log.write('test ran');
-  	});
+  	grunt.registerTask('dev', ['concurrent:dev']);
+
+    grunt.registerTask('test', function() {
+        console.log('test');
+    });
 };
