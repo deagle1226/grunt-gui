@@ -1,8 +1,6 @@
 var app = require('app');  // Module to control application life.
 var BrowserWindow = require('browser-window');  // Module to create native browser window.
-//var grunt = require('grunt');
 var ipc = require('ipc');
-var spawn = require('cross-spawn').spawn;
 
 // Report crashes to our server.
 require('crash-reporter').start();
@@ -14,8 +12,9 @@ var htmlDir = 'file://' + __dirname.replace('app', 'browser') + '/html/';
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function() {
-  if (process.platform != 'darwin')
-    app.quit();
+    if (process.platform != 'darwin') {
+        app.quit();
+    }
 });
 
 // This method will be called when atom-shell has done everything

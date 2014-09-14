@@ -30,6 +30,10 @@ module.exports = function(grunt) {
                 }]
             }
         },
+        jshint: {
+            app: ['app/**/*.js'],
+            browser: ['browser/js/**/*.js']
+        },
         watch: {
             sass: {
                 files: ['browser/sass/**/*.scss'],

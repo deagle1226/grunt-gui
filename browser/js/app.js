@@ -17,7 +17,8 @@ var ipc = require('ipc');
     function bindEvents() {
         $('#test').on('click', grunt.test);
         $('#sass').on('click', grunt.sass);
-        events.on('grunt-out', log);
+        $('#jshint').on('click', grunt.jshint);
+        events.on(grunt.EVENT.STDOUT, log);
         $('#refresh').on('click', function() {
             ipc.send('gg-refresh');
         });

@@ -6,8 +6,12 @@ module.exports = function(events) {
     var defaults = {
         verbose: false,
         force: false,
-        gruntfile: '',
+        gruntfile: false,
         noColor: true
+    };
+
+    var EVENT = {
+        STDOUT: 'grunt-out'
     };
 
     function run(task, options) {
@@ -15,19 +19,20 @@ module.exports = function(events) {
         _.defaults(options, defaults);
 
         var args = [task];
-
         if (options.verbose) args.push('--verbose');
         if (options.force) args.push('--force');
-        if (options.gruntfile.length > 1) args.push('--gruntfile ' + options.gruntfile);
+        if (options.gruntfile) args.push('--gruntfile ' + options.gruntfile);
         if (options.noColor) args.push('--no-color');
 
-        spawn('grunt', args).stdout.on('data', function(data) {
-            events.emit('grunt-out', data.toString());
+        spawn('grunt', args, {stdio: 'pipe'}).stdout.on('data', function(data) {
+            events.emit(EVENT.STDOUT, data.toString());
         });
     }
 
     return {
-        test: function() { run('test') },
-        sass: function() { run('sass', {verbose: true}) }
+        test: function() { run('test'); },
+        sass: function() { run('sass', {verbose: true}); },
+        jshint: function() { run('jshint'); },
+        EVENT: EVENT
     };
 };

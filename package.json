@@ -1,11 +1,13 @@
 {
-  "name": "Grunt GUI",
+  "name": "grunt-gui",
   "version": "0.1.0",
   "main": "app/main.js",
   "devDependencies": {
     "cross-spawn": "^0.2.3",
+    "gaze": "^0.5.1",
     "grunt": "^0.4.5",
     "grunt-concurrent": "^1.0.0",
+    "grunt-contrib-jshint": "^0.10.0",
     "grunt-contrib-sass": "~0.7.3",
     "grunt-contrib-watch": "^0.6.1",
     "grunt-download-atom-shell": "^0.8.2",
@@ -14,6 +16,7 @@
     "jit-grunt": "^0.8.0",
     "jquery": "^2.1.1",
     "time-grunt": "^1.0.0",
-    "underscore": "^1.7.0"
+    "underscore": "^1.7.0",
+    "watch-glob": "^0.1.3"
   }
 }
