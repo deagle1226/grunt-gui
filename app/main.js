@@ -8,7 +8,7 @@ require('crash-reporter').start();
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the javascript object is GCed.
 var mainWindow = null;
-var htmlDir = 'file://' + __dirname.replace('app', 'browser') + '/html/';
+var htmlDir = 'file://' + __dirname.substring(0, __dirname.length - 4) + '/browser/html/';
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function() {

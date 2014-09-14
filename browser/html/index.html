@@ -7,18 +7,21 @@
         <link rel="import" href="../bower/core-elements/core-elements.html">
         <link rel="import" href="../bower/paper-elements/paper-elements.html">
     </head>
-    <body>
+    <body unresolved>
         <core-scaffold>
             <core-header-panel navigation flex mode="seamed">
-                <core-toolbar>Grunt Tasks</core-toolbar>
+                <core-toolbar>
+                    <span flex>Grunt Tasks</span>
+                    <paper-toggle-button verbose></paper-toggle-button>
+                </core-toolbar>
                 <core-menu theme="core-light-theme">
-                    <paper-item icon="expand-more" label="Grunt Test" id="test"></paper-item>
-                    <paper-item icon="expand-less" label="Grunt Sass" id="sass"></paper-item>
-                    <paper-item icon="expand-less" label="Grunt JSHint" id="jshint"></paper-item>
+                    <paper-fab icon="restore" get-tasks></paper-fab>
                 </core-menu>
             </core-header-panel>
             <div tool flex>Console Logs</div>
-            <paper-icon-button tool icon="refresh" id="refresh"></paper-icon-button>
+            <paper-icon-button tool icon="clear"></paper-icon-button>
+            <paper-icon-button tool icon="refresh"></paper-icon-button>
+            <paper-icon-button tool icon="drawer"></paper-icon-button>
             <div>
                 <section id="logs">
                     <ul></ul>

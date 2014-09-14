@@ -11,8 +11,22 @@ module.exports = function(events) {
     };
 
     var EVENT = {
-        STDOUT: 'grunt-out'
+        STDOUT: 'grunt-out',
+        EXIT: 'grunt-exit',
+        GET: 'grunt-get'
     };
+
+    function getTasks() {
+        var thread = spawn('grunt', ['get-tasks'], {stdio: 'pipe'});
+        thread.stdout.on('data', function(data) {
+            try {
+                var tasks = JSON.parse(data.toString());
+                events.emit(EVENT.GET, _.omit(tasks, 'get-tasks'));
+            } catch(e) {
+                return false;
+            }
+        });
+    }
 
     function run(task, options) {
         options = options || {};
@@ -24,15 +38,20 @@ module.exports = function(events) {
         if (options.gruntfile) args.push('--gruntfile ' + options.gruntfile);
         if (options.noColor) args.push('--no-color');
 
-        spawn('grunt', args, {stdio: 'pipe'}).stdout.on('data', function(data) {
-            events.emit(EVENT.STDOUT, data.toString());
+        var thread = spawn('grunt', args, {stdio: 'pipe'});
+        thread.on('exit', function() {
+            events.emit(EVENT.EXIT, task, thread.pid, 'exit');
         });
+        thread.stdout.on('data', function(data) {
+            events.emit(EVENT.STDOUT, task, thread.pid, data.toString());
+        });
+        return thread.pid;
     }
 
+    getTasks();
     return {
-        test: function() { run('test'); },
-        sass: function() { run('sass', {verbose: true}); },
-        jshint: function() { run('jshint'); },
-        EVENT: EVENT
+        EVENT: EVENT,
+        run: run,
+        get: getTasks
     };
 };
