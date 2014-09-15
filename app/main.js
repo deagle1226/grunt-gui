@@ -1,6 +1,7 @@
 var app = require('app');  // Module to control application life.
 var BrowserWindow = require('browser-window');  // Module to create native browser window.
 var ipc = require('ipc');
+var shell = require('shell');
 
 // Report crashes to our server.
 require('crash-reporter').start();
@@ -25,6 +26,9 @@ app.on('ready', function() {
 
   // and load the index.html of the app.
   mainWindow.loadUrl(htmlDir + 'index.html');
+  mainWindow.openDevTools();
+
+  shell.showItemInFolder('');
 
   //grunt.task.run('test');
   ipc.on('gg-refresh', function(event) {

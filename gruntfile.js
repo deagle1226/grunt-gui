@@ -11,7 +11,7 @@ module.exports = function(grunt) {
         dir: {
             dist: {
                 mac: 'binaries/Atom.app/Contents/Resources/app',
-                win: 'resources/app'
+                win: 'binaries/resources/app'
             },
             atom: {
                 mac: './binaries/Atom.app/Contents/MacOS/Atom',
@@ -92,14 +92,14 @@ module.exports = function(grunt) {
             mac: {
                 files: [
                     {
-                        expand: true, 
+                        expand: true,
                         src: [
-                            'browser/**', 
-                            'app/**', 
-                            'node_modules/**', 
-                            'package.json', 
+                            'browser/**',
+                            'app/**',
+                            'node_modules/**',
+                            'package.json',
                             'gruntfile.js'
-                        ], 
+                        ],
                         dest: '<%= dir.dist.mac %>'
                     },
                 ]
@@ -107,14 +107,14 @@ module.exports = function(grunt) {
             win: {
                 files: [
                     {
-                        expand: true, 
+                        expand: true,
                         src: [
-                            'browser/**', 
-                            'app/**', 
-                            'node_modules/**', 
-                            'package.json', 
+                            'browser/**',
+                            'app/**',
+                            'node_modules/**',
+                            'package.json',
                             'gruntfile.js'
-                        ], 
+                        ],
                         dest: '<%= dir.dist.win %>'
                     },
                 ]
@@ -126,24 +126,24 @@ module.exports = function(grunt) {
         }
   	});
 
-  	grunt.registerTask('dev-mac', 
-        'Run debug app and development tasks (like sass) on Mac OS X', 
+  	grunt.registerTask('dev-mac',
+        'Run debug app and development tasks (like sass) on Mac OS X',
         ['clean:mac', 'concurrent:dev-mac']);
-    grunt.registerTask('dev-win', 
-        'Run debug app and development tasks (like sass) on Windows', 
+    grunt.registerTask('dev-win',
+        'Run debug app and development tasks (like sass) on Windows',
         ['clean:win', 'concurrent:dev-win']);
-    grunt.registerTask('build-mac', 
-        'Build distributable Atom.app for Mac OS X', 
+    grunt.registerTask('build-mac',
+        'Build distributable Atom.app for Mac OS X',
         ['concurrent:build', 'clean:mac', 'copy:mac']);
-    grunt.registerTask('build-win', 
-        'Build distributable atom.exe for Windows', 
+    grunt.registerTask('build-win',
+        'Build distributable atom.exe for Windows',
         ['concurrent:build', 'clean:win', 'copy:win']);
 
-    grunt.registerTask('grunt-sass', 
-        'Compile *.scss into *.css', 
+    grunt.registerTask('grunt-sass',
+        'Compile *.scss into *.css',
         ['sass:dev']);
-    grunt.registerTask('grunt-jshint', 
-        'Run JSHint on all javascript files', 
+    grunt.registerTask('grunt-jshint',
+        'Run JSHint on all javascript files',
         ['jshint']);
 
     grunt.registerTask('get-tasks', 'Helper for grunt-gui to get task data', function() {

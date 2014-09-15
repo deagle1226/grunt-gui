@@ -1,0 +1,21 @@
+@mixin toggle-color($color, $ink: $color) {
+    &::shadow {
+        #toggleBar {
+            background-color: $color;
+        }
+
+        paper-radio-button {
+            &::shadow {
+                #offRadio {
+                    border-color: $color;
+                }
+                #onRadio {
+                    background-color: $color;
+                }
+                #ink {
+                    color: $ink;
+                }
+            }
+        }
+    }
+}

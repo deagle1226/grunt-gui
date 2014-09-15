@@ -2,7 +2,7 @@ var _ = require('underscore');
 var remote = require('remote');
 var spawn = remote.require('cross-spawn');
 
-module.exports = function(events) {
+module.exports = (function(events) {
     var defaults = {
         verbose: false,
         force: false,
@@ -16,8 +16,11 @@ module.exports = function(events) {
         GET: 'grunt-get'
     };
 
-    function getTasks() {
-        var thread = spawn('grunt', ['get-tasks'], {stdio: 'pipe'});
+    function getTasks(gruntfile) {
+        gruntfile = gruntfile || false;
+        var args = ['get-tasks'];
+        if (gruntfile) args.push('--gruntfile ' + gruntfile);
+        var thread = spawn('grunt', args, {stdio: 'pipe'});
         thread.stdout.on('data', function(data) {
             try {
                 var tasks = JSON.parse(data.toString());
@@ -26,6 +29,10 @@ module.exports = function(events) {
                 return false;
             }
         });
+    }
+
+    function getTasksFromGrunt(grunt) {
+        return grunt.task._tasks;
     }
 
     function run(task, options) {
@@ -54,4 +61,4 @@ module.exports = function(events) {
         run: run,
         get: getTasks
     };
-};
+});

@@ -1,77 +1,136 @@
 var $ = require('jquery');
 var _ = require('underscore');
 var EventEmitter = require('events').EventEmitter;
-var events = new EventEmitter();
-var grunt = require('./grunt.js')(events);
+var emitter = new EventEmitter();
+var grunt = require('./grunt.js')(emitter);
+var pager = require('./pager.js');
 var ipc = require('ipc');
+var fs = require('fs');
 
 (function() {
 
-    var logs, menu;
-    var gruntOptions = {};
-    var processes = [];
+    var panel, logs, menu, gruntfile,
+        packageJson, gruntOptions,
+        processes, animations;
 
     function init() {
+        gruntOptions = {};
+        processes = [];
+        animations = {};
         $(document).on('ready', function() {
-            logs = $('#logs').find('ul');
+            panel = {
+                logs: $('#logs'),
+                settings: $('#settings')
+            };
+            logs = panel.logs.find('section').find('ul');
             menu = $('core-menu');
+            pager.init(panel.logs);
             bindEvents();
+
+            CoreStyle.g.paperInput.focusedColor = '#E78724';
         });
     }
 
     function bindEvents() {
-        menu.on('click', 'paper-item', runGrunt);
-        events.on(grunt.EVENT.STDOUT, log);
-        events.on(grunt.EVENT.EXIT, log);
-        $('[icon="refresh"]').on('click', function() {
+        menu.on('click', 'paper-item', events.runGrunt);
+        $('[icon="refresh"]').on('click', events.refresh);
+        $('[icon="clear"]').on('click',events.killAll);
+        $('[get-tasks]').on('click', events.getTasks);
+        $('[icon="menu"]').on('click', events.toggleDrawer);
+        $('[verbose]').on('change', events.toggleVerbose);
+        $('paper-input#gruntfile').on('change', events.input.gruntfile);
+
+        $('[icon="arrow-back"]').on('click', pager.back);
+        $('[icon="settings"]').on('click', {page: panel.settings}, pager.go);
+
+        emitter.on(grunt.EVENT.STDOUT, events.log);
+        emitter.on(grunt.EVENT.EXIT, events.log);
+        emitter.on(grunt.EVENT.GET, events.gruntGet);
+    }
+
+    var events = {
+        refresh: function(event) {
             _.each(processes, function(pid) {
                 process.kill(pid);
+                animations[pid].cancel();
             });
             ipc.send('gg-refresh');
-        });
-        $('[icon="clear"]').on('click', function() {
+        },
+        killAll: function(event) {
             _.each(processes, function(pid) {
                 process.kill(pid);
+                animations[pid].cancel();
             });
             logs.empty();
-        });
-        $('[get-tasks]').on('click', function() {
-            menu.empty();
-            grunt.get();
-        });
-        events.on(grunt.EVENT.GET, function(tasks) {
+        },
+        getTasks: function(event) {
+            menu.find('paper-item').remove();
+            grunt.get(gruntfile);
+        },
+        toggleDrawer: function(event) {
+            $('core-drawer-panel')[0].togglePanel();
+        },
+        gruntGet: function(tasks) {
             _.each(tasks, function(task, name) {
-                menu.append('<paper-item title="' + task.info + 
-                    '" label="' + name + 
-                    '" gruntfile="' + task.meta.filepath + 
-                    '" icon="radio-button-off"></paper-item>');
+                menu.append('<paper-item title="' + task.info +
+                    '" label="' + name +
+                    '" gruntfile="' + task.meta.filepath +
+                    '" icon="radio-button-off" class="active"></paper-item>');
             });
-        });
-        $('[verbose]').on('change', function() {
+        },
+        toggleVerbose: function(event) {
             if(this.checked) gruntOptions.verbose = true;
             else gruntOptions.verbose = false;
-        });
-    }
+        },
+        log: function(task, pid, data) {
+            if (data === 'exit') {
+                console.log(pid + ': ' + task + ' exited');
+                $('[label="' + task + '"]').attr('icon', 'radio-button-off').removeClass('active');
+                processes.splice(processes.indexOf(pid), 1);
+                animations[pid].cancel();
+            } else {
+                logs.append('<li pid="' + pid + '" task="' + task + '">' + data + '</li>');
+            }
+        },
+        runGrunt:function(event) {
+            if ($(this).attr('icon') === 'radio-button-off') {
+                var task = $(this).attr('label');
+                var gruntfile = $(this).attr('gruntfile');
+                $(this).attr('icon', 'radio-button-on').addClass('active');
+                var pid = grunt.run(task, gruntOptions);
+                processes.push(pid);
+                var animation = new CoreAnimation();
+                animation.duration = 1000;
+                animation.iterations = 'Infinity';
+                animation.keyframes = [
+                    {transform: 'scale3d(1, 1, 1)'},
+                    {transform: 'scale3d(1.05, 1.05, 1.05)'},
+                    {transform: 'scale3d(1, 1, 1)'}
+                ];
+                animation.target = $(this.shadowRoot)[0].children[1];
+                animation.play();
+                animations[pid] = animation;
+            }
+        },
+        input: {
+            gruntfile: function(event) {
+                gruntfile = $(this).val();
+                console.log(gruntfile);
+                fs.exists(gruntfile, function(exists) {
+                    if (exists) {
+                        menu.find('paper-item').remove();
+                        grunt.get(gruntfile);
+                        packageJson = fs.readFile(gruntfile.replace(/gruntfile.js/ig, 'package.json'), function (err, data) {
+                            packageJson = JSON.parse(data);
+                            console.log(packageJson);
+                            menu.find('h4').text(packageJson.name + '@' + packageJson.version);
+                        });
 
-    function log(task, pid, data) {
-        if (data === 'exit') {
-            console.log(pid + ': ' + task + ' exited');
-            $('[label="' + task + '"]').attr('icon', 'radio-button-off');
-            processes.splice(processes.indexOf(pid), 1);
-        } else if (_.contains(processes, pid)) {
-            logs.append('<li pid="' + pid + '" task="' + task + '">' + data + '</li>');
+                    }
+                });
+            }
         }
-    }
-
-    function runGrunt() {
-        if ($(this).attr('icon') === 'radio-button-off') {
-            var task = $(this).attr('label');
-            var gruntfile = $(this).attr('gruntfile');
-            $(this).attr('icon', 'radio-button-on');
-            var pid = grunt.run(task, gruntOptions);
-            processes.push(pid);
-        }
-    }
+    };
 
     module.exports.init = init;
 })();

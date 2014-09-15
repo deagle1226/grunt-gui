@@ -1,6 +1,8 @@
 @import 'partials/normalize';
 @import 'partials/fonts';
 @import 'partials/variables';
+@import 'partials/mixin';
+@import 'partials/animation';
 @import 'partials/typography';
 
 body {
@@ -10,16 +12,69 @@ body {
 @import 'partials/button';
 
 #logs {
-    padding: $padding;
+    section {
+        padding: $padding;
 
-    ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
 
-        li {
-            padding-left: $padding;
-            text-indent: -$padding;
+            li {
+                padding-left: $padding;
+                text-indent: -$padding;
+            }
+        }
+    }
+}
+
+core-header-panel {
+    display: block;
+}
+
+core-toolbar {
+    color: #fff;
+    span {
+        text-transform: uppercase;
+    }
+}
+
+[drawer] {
+    background: #e5e5e5;
+
+    core-toolbar {
+        background: $orange_dark;
+
+        paper-toggle-button {
+            @include toggle-color($brown, $orange_dark);
+        }
+    }
+    core-menu {
+
+        h1, h2, h3, h4 {
+            text-transform: uppercase;
+            padding: 0 $padding;
+        }
+
+        paper-item[icon="radio-button-on"]::shadow {
+            core-icon {
+                fill: $green;
+            }
+        }
+    }
+}
+
+[main] {
+    core-toolbar {
+        background: $brown;
+    }
+    paper-icon-button[icon="menu"] {
+        display: none;
+    }
+
+    &#settings {
+        div {
+            padding: 0 $padding;
         }
     }
 }
@@ -29,4 +84,13 @@ paper-fab {
     position: absolute;
     bottom: $padding;
     right: $padding;
+    background: $orange_dark;
+}
+
+core-drawer-panel[narrow] {
+    [main] {
+        paper-icon-button[icon="menu"] {
+            display: inline-block;
+        }
+    }
 }

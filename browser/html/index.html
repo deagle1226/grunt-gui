@@ -5,29 +5,48 @@
         <link href="../css/main.css" rel="stylesheet" type="text/css" />
         <script src="../bower/platform/platform.js"></script>
         <link rel="import" href="../bower/core-elements/core-elements.html">
+        <link rel="import" href="../bower/core-animation/core-animation.html">
         <link rel="import" href="../bower/paper-elements/paper-elements.html">
     </head>
     <body unresolved>
-        <core-scaffold>
-            <core-header-panel navigation flex mode="seamed">
+        <core-drawer-panel>
+            <core-header-panel drawer flex mode="waterfall">
                 <core-toolbar>
                     <span flex>Grunt Tasks</span>
                     <paper-toggle-button verbose></paper-toggle-button>
                 </core-toolbar>
-                <core-menu theme="core-light-theme">
-                    <paper-fab icon="restore" get-tasks></paper-fab>
+                <core-menu>
+                    <h4>this.development</h4>
                 </core-menu>
+                <paper-fab icon="restore" get-tasks></paper-fab>
+                <paper-shadow z="1"></paper-shadow>
             </core-header-panel>
-            <div tool flex>Console Logs</div>
-            <paper-icon-button tool icon="clear"></paper-icon-button>
-            <paper-icon-button tool icon="refresh"></paper-icon-button>
-            <paper-icon-button tool icon="drawer"></paper-icon-button>
-            <div>
-                <section id="logs">
-                    <ul></ul>
-                </section>
-            </div>
-        </core-scaffold>
+            <core-header-panel main flex mode="waterfall" id="logs">
+                <core-toolbar>
+                    <paper-icon-button tool icon="menu"></paper-icon-button>
+                    <span flex>Console Logs</span>
+                    <paper-icon-button tool icon="clear"></paper-icon-button>
+                    <paper-icon-button tool icon="refresh"></paper-icon-button>
+                    <paper-icon-button tool icon="settings"></paper-icon-button>
+                </core-toolbar>
+                <div>
+                    <section>
+                        <ul></ul>
+                    </section>
+                </div>
+            </core-header-panel>
+            <core-header-panel main flex mode="waterfall" id="settings">
+                <core-toolbar>
+                    <paper-icon-button tool icon="menu"></paper-icon-button>
+                    <paper-icon-button tool icon="arrow-back"></paper-icon-button>
+                    <span flex>Settings</span>
+                    <paper-icon-button tool icon="refresh"></paper-icon-button>
+                </core-toolbar>
+                <div>
+                    <paper-input floatinglabel label="Path to Gruntfile.js" id="gruntfile"></paper-input>
+                </div>
+            </core-header-panel>
+        </core-drawer-panel>
     </body>
     <script>
         require('../js/app.js').init();
