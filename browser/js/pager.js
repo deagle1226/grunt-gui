@@ -21,7 +21,7 @@ module.exports = (function() {
     function back() {
         if (history.length > 1) {
             history.pop();
-            go(_.last(history))
+            go(_.last(history));
             history = _.initial(history);
         }
     }

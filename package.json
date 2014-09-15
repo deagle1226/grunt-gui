@@ -17,6 +17,8 @@
     "grunt-timer": "^0.5.8",
     "jit-grunt": "^0.8.0",
     "jquery": "^2.1.1",
+    "jshint-stylish": "^0.4.0",
+    "swig": "^1.4.2",
     "time-grunt": "^1.0.0",
     "underscore": "^1.7.0"
   }

@@ -16,49 +16,13 @@
                     <paper-toggle-button verbose></paper-toggle-button>
                 </core-toolbar>
                 <core-menu>
-	<h4>this.development</h4>
-	
-</core-menu>
+                {% include "./task-menu.swig" %}
+                </core-menu>
                 <paper-fab icon="restore" get-tasks></paper-fab>
                 <paper-shadow z="1"></paper-shadow>
             </core-header-panel>
-            <core-header-panel main flex mode="waterfall" id="logs">
-    <core-toolbar>
-    	
-	
-    		<paper-icon-button tool icon="menu"></paper-icon-button>
-    	
-	<span flex>Console Logs</span>
-    <paper-icon-button tool icon="clear"></paper-icon-button>
-    <paper-icon-button tool icon="refresh"></paper-icon-button>
-    <paper-icon-button tool icon="settings"></paper-icon-button>
-
-    </core-toolbar>
-    <div>
-		
-	<section>
-	    <ul></ul>
-	</section>
-    
-    </div>
-</core-header-panel>
-            <core-header-panel main flex mode="waterfall" id="settings">
-    <core-toolbar>
-    	
-	
-    		<paper-icon-button tool icon="menu"></paper-icon-button>
-    	
-	<paper-icon-button tool icon="arrow-back"></paper-icon-button>
-	<span flex>Settings</span>
-	<paper-icon-button tool icon="refresh"></paper-icon-button>
-
-    </core-toolbar>
-    <div>
-		
-	<paper-input floatinglabel label="Path to Gruntfile.js" id="gruntfile"></paper-input>
-    
-    </div>
-</core-header-panel>
+            {% include "./panels/logs.swig" %}
+            {% include "./panels/settings.swig" %}
         </core-drawer-panel>
     </body>
     <script>

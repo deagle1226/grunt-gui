@@ -6,12 +6,14 @@ var grunt = require('./grunt.js')(emitter);
 var pager = require('./pager.js');
 var ipc = require('ipc');
 var fs = require('fs');
+var swig = require('swig');
 
 (function() {
 
     var panel, logs, menu, gruntfile,
         packageJson, gruntOptions,
-        processes, animations;
+        processes, animations,
+        gruntTasks;
 
     function init() {
         gruntOptions = {};
@@ -71,12 +73,15 @@ var fs = require('fs');
             $('core-drawer-panel')[0].togglePanel();
         },
         gruntGet: function(tasks) {
+            gruntTasks = [];
             _.each(tasks, function(task, name) {
-                menu.append('<paper-item title="' + task.info +
-                    '" label="' + name +
-                    '" gruntfile="' + task.meta.filepath +
-                    '" icon="radio-button-off" class="active"></paper-item>');
+                gruntTasks.push({
+                    name: name,
+                    description: task.info,
+                    gruntfile: task.meta.filepath
+                });
             });
+            menu.html(swig.renderFile('browser/swig/task-menu.swig', {tasks: gruntTasks}));
         },
         toggleVerbose: function(event) {
             if(this.checked) gruntOptions.verbose = true;

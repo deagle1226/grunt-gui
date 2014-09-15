@@ -60,29 +60,36 @@ module.exports = function(grunt) {
         },
         jshint: {
             app: ['app/**/*.js'],
-            browser: ['browser/js/**/*.js']
+            browser: ['browser/js/**/*.js'],
+            options: {
+                reporter: require('jshint-stylish')
+            }
         },
         watch: {
             sass: {
                 files: ['browser/sass/**/*.scss'],
                 tasks: ['sass:dev']
+            },
+            swig: {
+                files: ['browser/swig/**/*.swig'],
+                tasks: ['swig']
             }
         },
         concurrent: {
             'dev-mac': {
-                tasks: ['shell:mac', 'watch:sass'],
+                tasks: ['shell:mac', 'watch:sass', 'watch:swig'],
                 options: {
                     logConcurrentOutput: true
                 }
             },
             'dev-win': {
-                tasks: ['shell:win', 'watch:sass'],
+                tasks: ['shell:win', 'watch:sass', 'watch:swig'],
                 options: {
                     logConcurrentOutput: true
                 }
             },
             build: {
-                tasks: ['jshint', 'sass'],
+                tasks: ['jshint', 'sass', 'swig'],
                 options: {
                     logConcurrentOutput: true
                 }
@@ -123,8 +130,21 @@ module.exports = function(grunt) {
         clean: {
             mac: ['<%= dir.dist.mac %>'],
             win: ['<%= dir.dist.win %>']
+        },
+        swig: {
+            dev: {
+                init: {
+                    root: 'browser/swig/',
+                    allowErrors: false,
+                    autoescape: true
+                },
+                dest: 'browser/html/',
+                cwd: 'browser/swig/',
+                src: ['index.swig']
+            }
         }
   	});
+    grunt.loadTasks('tasks');
 
   	grunt.registerTask('dev-mac',
         'Run debug app and development tasks (like sass) on Mac OS X',
